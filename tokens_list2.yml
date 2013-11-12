@@ -1,0 +1,39 @@
+# tokens:
+#     - __ignore__:   ['\n', '#.*', '\n']
+#     - __ignore__:     '\n#.*'
+#     - __maxlength__:      15
+#     - hashmark:       '#'
+#     - space:          ' '
+#     - newline:        '\n' #Különböztesse meg a bekezdéstől
+#     - opentags:       '\{\{'
+#     - opendict:       '<'
+#     - closedict:      '>'
+#     - tagdelim:       '\|\|'
+#     - multitag:       '\|'
+#     - closetags:      '\}\}'
+#     - tagbegin:       '\['
+#     - tagend:         '\]'
+#     - bool:           '[01]'
+#     #- word:           '[\w.,?!;:\-\(\)"]+'
+#     - word:           '[^|{}<>#\[\]\n]+'
+
+lexers:
+    - első:
+        - word: '\w{{\w[][]}}'
+    - második:
+        - word: '.+^(\{\{)'
+        - vnbkjnb
+        - jhbf
+    - 
+
+syntax:
+    sentence:
+        - word+
+
+    word:
+        -w
+        -open
+        -lem
+        -tag+
+        -close
+
