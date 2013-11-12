@@ -87,6 +87,15 @@ class Lexer:
         self.buffer += text
     
     def get_token(self, end_of_stream):
+        #
+        # String:
+        #    Ha elég hosszú a puffer, akkor rákeresés a mintákra.
+        #
+        # Token:
+        #    Ha üres, beolvasás.
+        #    Ha van, és tovább kell adni, továbbadja.
+        #    Ha van és elemezni kell, benyomja a tartalmát a pufferbe.
+        #    
         if ( (len(self.buffer) < self.limit ) and not end_of_stream):
             return None
         for reg, name in self.r_list:
@@ -122,12 +131,6 @@ def main():
             tok = lex.get_token(text.is_end())
     print("Finished")
         
-
-
-
-def get_rules(filename):
-    return yaml.load(open(filename))['tokens']
-
 
 
 if __name__ == '__main__': main()
