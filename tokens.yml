@@ -1,0 +1,12 @@
+tokens:
+    hashmark:       '#'
+    newline:        '\n' #Különböztesse meg a bekezdéstől
+    word:           [ '\w+', 'i' ] #Ne vegye be a számokat
+    opentags:       '{{'
+    opendict:       '<'
+    closedict:      '>'
+    tagdelim:       '||'
+    closetags:      '}}'
+    tagbegin:       '\['
+    tagend:         '\]'
+    bool:           '[01]'
