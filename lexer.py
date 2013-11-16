@@ -4,37 +4,12 @@
 import re
 import yaml
 import sys
+import text_reader
 from argparse import ArgumentError
-
-# Instead of this Token type maybe it would be faster to use primitive tuples like (type, value, and so on)
-class Token:
-    def __init__(self, name, value = None):
-        self.name = name
-        self.value = value
-
-
-class TextReader:
-    def __init__(self, stream = sys.stdin, buffsize = 4096):
-        self._stream = stream
-        self._buffersize = buffsize
-        self._end = False
-    
-    def __iter__(self):
-        while not self._end:
-            yield self.read()
-    
-    def read(self):
-        strng = self._stream.read(self._buffersize)
-        if len(strng) < self._buffersize: self._end = True
-        return strng
-    
-    def is_end(self):
-        return self._end
 
 
 class Lexer:
-    """
-    Lexikai elemző osztály.
+    """ Lexikai elemző osztály.
     Paraméternek egy dictet (név: regkif), vagy egy listet ([(név, regkif)]) vár.
     put_text(str): puffer feltöltése str-vel
     get_token(end): Token generálása a pufferből.
