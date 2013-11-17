@@ -1,11 +1,48 @@
 #!/usr/bin/python3
 
-#import codecs
 import re
-import yaml
-import sys
 import text_reader
-from argparse import ArgumentError
+
+
+class Action:
+    """ Action osztály a találatok kezelésére
+    Action(**args)
+        Action konstruktor. Argumnetumkulcsok:
+        token_name: Token-név, str, kötelező
+        value_needed: A token tárolja-e a felismert lexémát? bool
+        external_call: Külső függvény hívása a lexéma utófeldolgozására. str
+             A külső függvény szignatúrája:  fuction_name(found_lexeme): str
+        module: Modul elérési útja. Ha van external_call, kötelező. str
+    self.action(match_str, row, column) : tuple
+        A talált lexémára létrehozza a megfelelő tokent
+    """
+    def __init__(self, **args):
+        """
+        self.token_name
+        self.action
+        self.external_call
+        """
+        self.token_name = args['token_name']
+        v = args.get('value_needed', True)
+        self.action = _action_with_v if v else _action_without_v
+        self.external_call = args.get('external', None)
+        if self.external_call:
+            self.action = _action_with_external_call
+            #self.mod = importlib.import_module(args['module']) # todo javítás
+            runfile(args['module'])
+            self.external_call = locals()[self.external_call]
+    
+    def _action_with_v(self, match_str, row, column):
+        return (self.token_name, match_str, row, column)
+    
+    def _action_withtout_v(self, match_str, row, column):
+        return (self.token_name, None, row, column)
+
+    def _action_with_external_call(self, match_str, row, column):
+        match_str = self.external_call(match_str) #getattr(self.mod, self.external_call)(match_str)
+        return (self.token_name, match_str, row, column)
+
+
 
 
 class Lexer:
@@ -30,7 +67,7 @@ class Lexer:
         elif type(source) == TextReader:
             self.s_type_l = False
             self.load_from_s = self._get_from_tr_
-        else: raise ArgumentError("Not valid source type: {}. Lexer or TextReader expected".format(type(source)))
+        else: raise Exception("Not valid source type: {}. Lexer or TextReader expected".format(type(source)))
         
         if type(rules) == dict:
             for key,val in rules.items():
@@ -39,7 +76,7 @@ class Lexer:
             for r in rules:
                 key,val = r.popitem()
                 build(key, val)
-        else: raise ArgumentError("Not valid argument: {}. Expected dict of token definitions or list of list of name, def pairs".format(type(rules)))
+        else: raise Exception("Not valid argument: {}. Expected dict of token definitions or list of list of name, def pairs".format(type(rules)))
         
         def build(k,v):
             """
@@ -91,21 +128,3 @@ class Lexer:
     def _get_from_lx_(self):
         pass
 
-
-
-def main():
-    y = yaml.load(open("tokens_list.yml"))
-    lex = Lexer(y['tokens'])
-    text = TextReader(open("George_Orwell_1984_tokenized_UTF-8_annotalt.txt"), 4096)
-    
-    for buffer in text:
-        lex.put_text(buffer)
-        tok = lex.get_token(text.is_end())
-        while tok:
-            print(tok.name, tok.value)
-            tok = lex.get_token(text.is_end())
-    print("Finished")
-        
-
-
-if __name__ == '__main__': main()
