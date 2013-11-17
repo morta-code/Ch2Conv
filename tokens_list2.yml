@@ -1,30 +1,30 @@
-# tokens:
-#     - __ignore__:   ['\n', '#.*', '\n']
-#     - __ignore__:     '\n#.*'
-#     - __maxlength__:      15
-#     - hashmark:       '#'
-#     - space:          ' '
-#     - newline:        '\n' #Különböztesse meg a bekezdéstől
-#     - opentags:       '\{\{'
-#     - opendict:       '<'
-#     - closedict:      '>'
-#     - tagdelim:       '\|\|'
-#     - multitag:       '\|'
-#     - closetags:      '\}\}'
-#     - tagbegin:       '\['
-#     - tagend:         '\]'
-#     - bool:           '[01]'
-#     #- word:           '[\w.,?!;:\-\(\)"]+'
-#     - word:           '[^|{}<>#\[\]\n]+'
+grammarver: 1
+macros:
+    # not implemented
+    char: '[\w]'
 
 lexers:
     - első:
-        - word: '\w{{\w[][]}}'
+        # tömb, nem tömb?
+        - __maxlength__: 40 
+        - __ignore__: ['#(?![01]).+']
+        - space: [' ', no]
+        - newparagraph: ['\n\n', no]
+        - newsentence: ['\n', no]
+        - word: ['[^\s]+', yes]
     - második:
-        - word: '.+^(\{\{)'
-        - vnbkjnb
-        - jhbf
-    - 
+        - newparagraph
+        - newsentence
+        - word:
+            - tag: ['\[\w+\]', yes]
+            - multitag: ['\[\w+\|\w+\]', yes]
+            - delim: ['\|\|', no]
+            - opentags: ['\{\{', no]
+            - closetags: ['\}\}', no]
+            - bool: ['#[01]', yes] #tipikus példa az utófeldolgozásra, # levétele
+            - opendict: ['<', no]
+            - closedict: ['>', no]
+            - w: ['[^|{}<>#\[\]\n]+', yes]
 
 syntax:
     sentence:
