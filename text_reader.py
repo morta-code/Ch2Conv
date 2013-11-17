@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 
 class TextReader:
     def __init__(self, stream = sys.stdin, buffsize = 4096):
