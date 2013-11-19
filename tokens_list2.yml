@@ -5,7 +5,7 @@ macros:
 
 lexers:
     - első:
-        # tömb, nem tömb?
+        # tömb, nem tömb? HA nem tömb, akkor kezelje 1 eleműnek (és ha kell, default: yes)
         - __maxlength__: 40 
         - __ignore__: ['#(?![01]).+']
         - space: [' ', no]
