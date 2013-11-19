@@ -19,7 +19,7 @@ A szabályok a következő alakúak lehetnek az első lexernél:
 
 	név: [regexp, opt]
 
-ahol a regexp érvényes reguláris kifejezés és perl-tipusú előretekintés lehet, az opt pedig yes, ha tovább kell vinni a lexémát, no, ha nem, vagy egy függvénynév  ha külső feldolgozást is szeretnénk a lexémán.
+ahol a regexp érvényes reguláris kifejezés és perl-tipusú előretekintés lehet, az opt pedig yes, ha tovább kell vinni a lexémát, no, ha nem, vagy egy függvénynév ha külső feldolgozást is szeretnénk a lexémán. Nem kötelező megadni, default érték a yes (ekkor tömb sem kell).
 
 Kucsszavak a szabályokban:
 
@@ -28,7 +28,7 @@ Kucsszavak a szabályokban:
 
 Megadható a szövegforrásnál a maximális lexéma hossz (nem kötelező, de biztonságot ad), illetve megadható, milyen lexémákból ne generáljon tokent (több is megadható), pl. kommentek esetén.
 
-A második lexertől a szabály örökölhető tokenneveket tartalmaz. Ha nincs értéke, feldolgozás nélkül tovább adja, ha pedig feldolgozás szükséges, tömbben felsorolva adjuk meg a fentihez hasonló szabályokat.
+A második lexertől a szabály örökölhető tokenneveket tartalmaz. Ha nincs értéke, feldolgozás nélkül tovább adja, ha pedig feldolgozás szükséges, tömbben felsorolva adjuk meg a fentihez hasonló szabályokat. Fontos, hogy nem lehe ismétlődés a tokennevekben, mert az elemzés közben félreértéshez vzetne.
 
 TODO: a regexp mindenhol helyettesíthető kételemű tömbbel, ahol a lexéma eleje és a vége adható meg, hosszabb lexémák esetén. Még nincs implementálva
 
@@ -36,9 +36,8 @@ TODO: a regexp mindenhol helyettesíthető kételemű tömbbel, ahol a lexéma e
 
 	lexers:
 	    - első:
-	        # tömb, nem tömb? HA nem tömb, akkor kezelje 1 eleműnek (és ha kell, default: yes)
 	        - __maxlength__: 40 
-	        - __ignore__: ['#(?![01]).+']
+	        - __ignore__: '#(?![01]).+'
 	        - space: [' ', no]
 	        - newparagraph: ['\n\n', no]
 	        - newsentence: ['\n', no]
