@@ -1,8 +1,73 @@
 #!/usr/bin/python3
 
-import parser, lexer, text_reader
+# import parser, lexer, text_reader
+import sys
+import getopt
+
+__version__=0.5
 
 def main():
+    input = sys.stdin
+    output = sys.stdout
+    grammar = None
+    
+    if len(sys.argv) == 1 or sys.argv[1] in ("-h", "--help"):
+         printhelp()
+         sys.exit()
+    elif sys.argv[1] == "-l":
+        printbuiltins()
+        sys.exit()
+    elif sys.argv[1] in ("-v", "--version"):
+        printver()
+        sys.exit()
+    else:
+        try:
+            grammar = open(sys.argv[1])
+        except:
+            print("Not valid file: {}".format(sys.argv[1]))
+            printhelp()
+            sys.exit(2)
+        
+    try:
+        opts, args = getopt.getopt(sys.argv[2:],"hi:o:")
+        print(opts, args)
+    except getopt.GetoptError:
+      printhelp()
+      sys.exit(2)
+    for opt, arg in opts:
+      if opt == '-h':
+         printhelp()
+         sys.exit()
+      elif opt == "-i":
+         input = arg
+      elif opt == "-o":
+         output = arg
+    print('Grammar file is', grammar)
+    print('Input is ', input)
+    print('Output is ', output)
+    
+#     y = yaml.load(open("tokens_list.yml"))
+#     lex = Lexer(y['tokens'])
+#     text = TextReader(open("George_Orwell_1984_tokenized_UTF-8_annotalt.txt"), 4096)
+#     
+#     for buffer in text:
+#         lex.put_text(buffer)
+#         tok = lex.get_token(text.is_end())
+#         while tok:
+#             print(tok.name, tok.value)
+#             tok = lex.get_token(text.is_end())
+#     print("Finished")
+    
+    
+def printhelp():
+    print("Usage:\n\tch2conv (definition_file|builtin) [-i infile] [-o outfile]\n\tch2conv -h\n\tch2conv -l")
+    
+def printbuiltins():
+    # TODO
     pass
+
+def printver():
+    # TODO
+    print(__version__)
 
 if __name__ == '__main__': main()
