@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
-# import parser, lexer, text_reader
+import parser, lexer, text_reader
 import sys
 import getopt
+import yaml
 
 __version__=0.5
 
@@ -22,15 +23,17 @@ def main():
         sys.exit()
     else:
         try:
-            grammar = open(sys.argv[1])
-        except:
+            grammar = yaml.load(open(sys.argv[1]))
+        except IOError:
             print("Not valid file: {}".format(sys.argv[1]))
             printhelp()
             sys.exit(2)
+        except:
+            print("Given grammar file ({}) is not valid.").format(sys.argv[1])
+            sys.exit(3)
         
     try:
         opts, args = getopt.getopt(sys.argv[2:],"hi:o:")
-        print(opts, args)
     except getopt.GetoptError:
       printhelp()
       sys.exit(2)
@@ -42,13 +45,19 @@ def main():
          input = arg
       elif opt == "-o":
          output = arg
-    print('Grammar file is', grammar)
-    print('Input is ', input)
-    print('Output is ', output)
+
     
-#     y = yaml.load(open("tokens_list.yml"))
-#     lex = Lexer(y['tokens'])
-#     text = TextReader(open("George_Orwell_1984_tokenized_UTF-8_annotalt.txt"), 4096)
+    ### Pipeline
+    src = text_reader.TextReader(input) # TODO: puffer megadása
+    for ldef in grammar['lexers']:
+        name, rules = ldef.popitem()
+        lex = lexer.Lexer(name, rules, src)
+        src = lex
+    
+    prs = parser.Parser(src, grammar['syntax'], output)
+    
+    ### Magic!
+    prs.parse()
 #     
 #     for buffer in text:
 #         lex.put_text(buffer)
@@ -69,5 +78,12 @@ def printbuiltins():
 def printver():
     # TODO
     print(__version__)
+
+def valid(gr):
+    # TODO
+    # Van legalább egy lexer?
+    # Van pntosan egy syntax
+    # Lexerek: tömb, szabályok tömbben, első lexer értékei nem lehetnek skalárok
+    pass
 
 if __name__ == '__main__': main()

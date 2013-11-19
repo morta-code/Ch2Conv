@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 
 import lexer
-import text_reader
 
 class Parser:
-    def __init__(self, lexer, rules, dest=sys.stdout):
+    def __init__(self, lexer, rules, dest):
         self.lx = lexer
         self.dest_stream = dest
     

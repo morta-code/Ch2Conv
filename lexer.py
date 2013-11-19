@@ -3,6 +3,7 @@
 import re
 import text_reader
 
+####################################################################################################
 
 class Action:
     """ Action osztály a találatok kezelésére
@@ -43,7 +44,7 @@ class Action:
         return (self.token_name, match_str, row, column)
 
 
-
+####################################################################################################
 
 class Lexer:
     """ Lexikai elemző osztály.
@@ -52,7 +53,7 @@ class Lexer:
     get_token(end): Token generálása a pufferből.
         Az end jelzi, hogy a pufferen kívül van-e még betölthető szöveg. Ha None-nal tér vissza, akkor újra kell tölteni a puffert.
     """
-    def __init__(self, rules, source):
+    def __init__(self, name, rules, source):
         self.buffer = None
         self.r_list = list()
         self.limit = 10 #default max token hossz
@@ -60,24 +61,6 @@ class Lexer:
         self.s_type_l = True
         self.load_from_s = None
         self.end_of_source = False
-        
-        if type(source) == Lexer:
-            self.s_type_l = True
-            self.load_from_s = self._get_from_lx_
-        elif type(source) == TextReader:
-            self.s_type_l = False
-            self.load_from_s = self._get_from_tr_
-        else: raise Exception("Not valid source type: {}. Lexer or TextReader expected".format(type(source)))
-        
-        if type(rules) == dict:
-            for key,val in rules.items():
-                build(key, val)
-        elif type(rules) == list:
-            for r in rules:
-                key,val = r.popitem()
-                build(key, val)
-        else: raise Exception("Not valid argument: {}. Expected dict of token definitions or list of list of name, def pairs".format(type(rules)))
-        
         def build(k,v):
             """
             Szabályt felépítő eljárás
@@ -93,6 +76,24 @@ class Lexer:
                 self.r_list.append( (re.compile(v[0], flags), k) )
             else:
                 self.r_list.append( (re.compile(v), k) )
+        
+        if type(source) == Lexer:
+            self.s_type_l = True
+            self.load_from_s = self._get_from_lx_
+        elif type(source) == text_reader.TextReader:
+            self.s_type_l = False
+            self.load_from_s = self._get_from_tr_
+        else: raise Exception("Not valid source type: {}. Lexer or TextReader expected".format(type(source)))
+        
+        if type(rules) == dict:
+            for key,val in rules.items():
+                build(key, val)
+        elif type(rules) == list:
+            for r in rules:
+                key,val = r.popitem()
+                build(key, val)
+        else: raise Exception("Not valid argument: {}. Expected dict of token definitions or list of list of name, def pairs".format(type(rules)))
+        
     
     
     def put_text(self, text):
