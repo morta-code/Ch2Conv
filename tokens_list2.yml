@@ -31,9 +31,9 @@ syntax:
         - word+
 
     word:
-        -w
-        -open
-        -lem
-        -tag+
-        -close
+        - w
+        - open
+        - lem
+        - tag+
+        - close
 
