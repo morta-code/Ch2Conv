@@ -2,10 +2,13 @@
 Környezetfüggetlen nyelvtannal leírható nyelvek közti konverziót megvalósító alkalmazás
 
 ### Használat
-+ ch2conv definitions.yml
+	
+	ch2conv definitions.yml
+
 Olvasás és írás a std. in és outputtal
 
-+ ch2conv definitions.yml -i input -o output
+	ch2conv definitions.yml -i input -o output
+
 Olvasás és írás a megadott fájlokból (vegyíthető az előzővel).
 
 ### Definíciók
@@ -28,7 +31,7 @@ Kucsszavak a szabályokban:
 
 Megadható a szövegforrásnál a maximális lexéma hossz (nem kötelező, de biztonságot ad), illetve megadható, milyen lexémákból ne generáljon tokent (több is megadható), pl. kommentek esetén.
 
-A második lexertől a szabály örökölhető tokenneveket tartalmaz. Ha nincs értéke, feldolgozás nélkül tovább adja, ha pedig feldolgozás szükséges, tömbben felsorolva adjuk meg a fentihez hasonló szabályokat. Fontos, hogy nem lehe ismétlődés a tokennevekben, mert az elemzés közben félreértéshez vzetne.
+A második lexertől a szabály kizárólag örökölhető tokenneveket tartalmaz. Ha nincs értéke, feldolgozás nélkül tovább adja, ha pedig feldolgozás szükséges, tömbben felsorolva adjuk meg a fentihez hasonló szabályokat. Fontos, hogy nem lehet ismétlődés a tokennevekben (öröklött word nem tartalmazhat word nevű szabályt), mert az elemzés közben félreértéshez vezetne.
 
 TODO: a regexp mindenhol helyettesíthető kételemű tömbbel, ahol a lexéma eleje és a vége adható meg, hosszabb lexémák esetén. Még nincs implementálva
 

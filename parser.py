@@ -7,7 +7,7 @@ class Parser:
         self.lx = lexer
         self.dest_stream = dest
     
-    def parse():
+    def parse(self):
         token = self.lx.get_token()
         while token:
             print(token, file=self.dest_stream)
