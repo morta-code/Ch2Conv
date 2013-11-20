@@ -42,6 +42,9 @@ class Action:
     def _action_with_external_call(self, match_str, row, column):
         match_str = self.external_call(match_str) #getattr(self.mod, self.external_call)(match_str)
         return (self.token_name, match_str, row, column)
+    
+    def _action_for_ignore(self, match_str, row, column):
+        return None
 
 
 ####################################################################################################
@@ -56,14 +59,20 @@ class Lexer:
     def __init__(self, name, rules, source):
         self.name = name
         self.source = source
+        self.buffer = ""
+        self.get_token = None
+        self.rules = [] # TODO
+        self.row = 0
+        self.column = 0
         
         def init_as_text():
             self.get_token = self._get_from_tr_
-            self.buffer = source.read() # vagy "" ?
+            self.buffer = source.read()
+            self.max_lex_len = None # TODO
         
         def init_as_lex():
             self.get_token = self._get_from_lx_
-            self.buffer = source.get_token()
+            self.tok = None
             
         
         if type(source) == Lexer: init_as_lex()
@@ -111,37 +120,56 @@ class Lexer:
 #         else: raise Exception("Not valid argument: {}. Expected dict of token definitions or list of list of name, def pairs".format(type(rules)))
         
     
-    
-#     def put_text(self, text):
-#         self.buffer += text
-#     
-#     def get_token(self, end_of_stream):
-#         #
-#         # String:
-#         #    Ha elég hosszú a puffer, akkor rákeresés a mintákra.
-#         #
-#         # Token:
-#         #    Ha üres, beolvasás.
-#         #    Ha van, és tovább kell adni, továbbadja.
-#         #    Ha van és elemezni kell, benyomja a tartalmát a pufferbe.
-#         #    
-#         if ( (len(self.buffer) < self.limit ) and not end_of_stream):
-#             return None
-#         for reg, name in self.r_list:
-#             mtch = reg.match(self.buffer)
-#             if mtch:
-#                 self.buffer = self.buffer[len(mtch.group()):]
-#                 return Token(name, mtch.group())
-#         else:
-#             if end_of_stream: return None
-#             raise BufferError("No match found. {}".format(self.buffer[0:10]))
-    
-#     def is_end(self):
-#         return self.end_of_source
-    
-    def _get_from_tr_(self):
-        self.buffer += self.source.read()
-    
-    def _get_from_lx_(self):
+    def is_end(self): # TODO
         pass
+    
+    # Match mode
+    # TODO pozíciók
+    def _get_from_tr_(self):
+        if len(self.buffer) < self.max_lex_len and not self.source.is_end(): # TODO is_end??
+            self.buffer += self.source.read()
+        
+        for pat, act in self.rules:
+            mtch = pat.match(self.buffer)
+            if mtch:
+                self.buffer = self.buffer[len(mtch.group()):] # TODO előző eltárolása a visszatekintés miatt?
+                t = act.action(mtch.group(), self.row, self.column)
+                if t: return t
+                else: return self._get_from_tr_() # TODO átgondolni, hogy hatékony-e
+                # TODO Ha a buf végére ért, nem biztos, hogy valid a találat, vagy nincs is találat. max_len nem kötelező!
+        else:
+            raise BufferError("No match found. {}".format(self.buffer[0:10]))
+        
+    
+    
+    # TODO pozíciók
+    def _get_from_lx_(self):
+        # TODO átgondolni, hogyan tárolom a szabályokat
+        if not self.buffer and not self.source.is_end():
+            self.tok = self.source.get_token()
+            if self.tok[0] not in self.rules.keys():
+                return self.tok
+            
+            self.buffer = self.tok[1]
+            self.row = self.tok[2]
+            self.column = self.tok[3]
+        
+        for pat, act in self.rules[self.tok[0]]:
+            mtch = pat.match(self.buffer)
+            if mtch:
+                self.buffer = self.buffer[len(mtch.group()):] # TODO előző eltárolása a visszatekintés miatt?
+                t = act.action(mtch.group(), self.row, self.column)
+                if t: return t
+                else: return self._get_from_lx_()
+                
+        else: raise BufferError("No match found. {}".format(self.buffer[0:10]))
+        
+        
+
+
+
+
+
+
+
 

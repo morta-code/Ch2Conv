@@ -12,9 +12,7 @@ lexers:
         - newsentence: ['\n', no]
         - word: '[^\s]+'
     - második:
-        - newparagraph
-        - newsentence
-        - word:
+        - word: # TODO dict
             - tag: ['\[\w+\]', yes]
             - multitag: ['\[\w+\|\w+\]', yes]
             - delim: ['\|\|', no]
