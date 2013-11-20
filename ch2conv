@@ -51,13 +51,15 @@ def main():
     src = text_reader.TextReader(input) # TODO: puffer megadása
     for ldef in grammar['lexers']:
         name, rules = ldef.popitem()
+#         print(name)
+#         print(rules)
         lex = lexer.Lexer(name, rules, src)
         src = lex
     
     prs = parser.Parser(src, grammar['syntax'], output)
     
     ### Magic!
-    prs.parse()
+    #prs.parse()
 #     
 #     for buffer in text:
 #         lex.put_text(buffer)

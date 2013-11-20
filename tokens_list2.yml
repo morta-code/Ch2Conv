@@ -5,23 +5,23 @@ macros:
 
 lexers:
     - első:
-        - __maxlength__: 40 
-        - __ignore__: '#(?![01]).+'
-        - space: [' ', no]
-        - newparagraph: ['\n\n', no]
-        - newsentence: ['\n', no]
-        - word: '[^\s]+'
+        - __maxlength__:    40 
+        - __ignore__:       ['#(?![01]).+']
+        - space:            [' ', no]
+        - newparagraph:     ['\n\n', no]
+        - newsentence:      ['\n', no]
+        - word:             ['[^\s]+', yes]
     - második:
-        - word: # TODO dict
-            - tag: ['\[\w+\]', yes]
-            - multitag: ['\[\w+\|\w+\]', yes]
-            - delim: ['\|\|', no]
-            - opentags: ['\{\{', no]
-            - closetags: ['\}\}', no]
-            - bool: ['#[01]', yes] #tipikus példa az utófeldolgozásra, # levétele
-            - opendict: ['<', no]
-            - closedict: ['>', no]
-            - w: ['[^|{}<>#\[\]\n]+', yes]
+        - word:
+            - tag:          ['\[\w+\]', yes]
+            - multitag:     ['\[\w+\|\w+\]', yes]
+            - delim:        ['\|\|', no]
+            - opentags:     ['\{\{', no]
+            - closetags:    ['\}\}', no]
+            - bool:         ['#[01]', yes]
+            - opendict:     ['<', no]
+            - closedict:    ['>', no]
+            - w:            ['[^|{}<>#\[\]\n]+', yes]
 
 syntax:
     sentence:
@@ -30,33 +30,6 @@ syntax:
     word:
         - w
         - open
-        - lem
+        - w
         - tag+
         - close
-
-[
-    {'első': [  {'__maxlength__': 40},
-                {'__ignore__': ['#(?![01]).+']},
-                {'space': [' ', False]},
-                {'newparagraph': ['\\n\\n', False]},
-                {'newsentence': ['\\n', False]},
-                {'word': ['[^\\s]+', True]}
-            ]
-    },
-    {'második': [   'newparagraph',
-                    'newsentence',
-                    {'word': [  {'tag': ['\\[\\w+\\]', True]},
-                                {'multitag': ['\\[\\w+\\|\\w+\\]', True]},
-                                {'delim': ['\\|\\|', False]},
-                                {'opentags': ['\\{\\{', False]},
-                                {'closetags': ['\\}\\}', False]},
-                                {'bool': ['#[01]', True]},
-                                {'opendict': ['<', False]},
-                                {'closedict': ['>', False]},
-                                {'w': ['[^|{}<>#\\[\\]\\n]+', True]}
-                            ]
-                    }
-                ]
-    }
-]
-
