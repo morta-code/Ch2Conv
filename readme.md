@@ -1,5 +1,5 @@
 # Ch2Conv
-Környezetfüggetlen nyelvtannal leírható nyelvek közti konverziót megvalósító alkalmazás
+Ekvivalens környezetfüggetlen nyelvtannal leírható nyelvek közti konverziót megvalósító alkalmazás
 
 ### Használat
 	
@@ -12,9 +12,10 @@ Olvasás és írás a std. in és outputtal
 Olvasás és írás a megadott fájlokból (vegyíthető az előzővel).
 
 ### Definíciók
-Szabványos YAML fájl, kötelező megadni, és két fő része van:
+Szabványos YAML fájl, kötelező megadni, részei:
++ macros (nincs implementálva)
 + lexers
-+ syntax
++ syntax (nincs implementálva)
 
 A lexers résszel definiálunk tokenizálókat (tömbbe rendezve), mégpedig úgy, hogy tömbbe rendezve felsoroljuk a szabályokat.
 

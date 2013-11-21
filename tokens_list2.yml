@@ -1,11 +1,10 @@
-grammarver: 1
 macros:
     # not implemented
     char: '[\w]'
 
 lexers:
     - első:
-        - __maxlength__:    40 
+        - __maxlength__:    200 
         - __ignore__:       ['#(?![01]).+']
         - space:            [' ', no]
         - newparagraph:     ['\n\n', no]

@@ -42,7 +42,7 @@ def main():
          printhelp()
          sys.exit()
       elif opt == "-i":
-         input = arg
+         input = open(arg)
       elif opt == "-o":
          output = arg
 
@@ -59,15 +59,8 @@ def main():
     prs = parser.Parser(src, grammar['syntax'], output)
     
     ### Magic!
-    #prs.parse()
-#     
-#     for buffer in text:
-#         lex.put_text(buffer)
-#         tok = lex.get_token(text.is_end())
-#         while tok:
-#             print(tok.name, tok.value)
-#             tok = lex.get_token(text.is_end())
-#     print("Finished")
+    prs.parse()
+    print("Finished.")
     
     
 def printhelp():

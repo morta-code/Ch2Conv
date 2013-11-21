@@ -71,7 +71,7 @@ class Lexer:
                 elif rnam == '__ignore__':
                     self.rules.append((re.compile(rval[0]), Action()))
                 else:
-                    self.rules.append((re.compile(rval[0]), Action(rval[1])))
+                    self.rules.append((re.compile(rval[0]), Action(rval[1], rnam)))
                 
         
         def init_as_lex():
@@ -86,8 +86,8 @@ class Lexer:
                     if rnam == '__ignore__':
                         l.append((re.compile(rval[0]), Action()))
                     else:
-                        l.append((re.compile(rval[0]), Action(rval[1])))
-                self.rules[nam] = l                  
+                        l.append((re.compile(rval[0]), Action(rval[1], rnam)))
+                self.rules[nam] = l
         
         
         if type(source) == Lexer: init_as_lex()
