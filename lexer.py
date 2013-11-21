@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import re
+from symbol import return_stmt
 import text_reader
 
 ####################################################################################################
@@ -59,7 +60,7 @@ class Lexer:
         self.source = source
         self.buffer = ""
         self.get_token = None
-        self.rules = []     # TODO
+        self.rules = [] # TODO
         self.row = 0
         self.column = 0
         
@@ -99,40 +100,47 @@ class Lexer:
     
     
     def is_end(self): # TODO valami hatékonyabb?
-        return self.source.is_end()
+        if self.buffer:
+            return False
+        else:
+            return self.source.is_end()
     
     # Match mode
-    # TODO pozíciók
+    # TODO pozíciók, source.is_end kiemelése
     def _get_from_tr_(self):
         if len(self.buffer) < self.max_lex_len and not self.source.is_end(): # TODO is_end??
             self.buffer += self.source.read()
-        
+
         for pat, act in self.rules:
             mtch = pat.match(self.buffer)
             if mtch:
-                self.buffer = self.buffer[len(mtch.group()):] # TODO előző eltárolása a visszatekintés miatt?
-                t = act.action(mtch.group(), self.row, self.column)
-                if t: return t
-                else: return self._get_from_tr_() # TODO átgondolni, hogy hatékony-e
-                # TODO Ha a buf végére ért, nem biztos, hogy valid a találat, vagy nincs is találat. max_len nem kötelező!
+                if len(self.buffer) == len(mtch.group()) and not self.source.is_end():
+                    self.buffer += self.source.read()
+                    return self._get_from_tr_()
+                else:
+                    self.buffer = self.buffer[len(mtch.group()):] # TODO előző eltárolása a visszatekintés miatt?
+                    t = act.action(mtch.group(), self.row, self.column)
+                    if t: return t
+                    else: return self._get_from_tr_() # TODO átgondolni, hogy hatékony-e
         else:
             raise BufferError("No match found. {}".format(self.buffer[0:10]))
-        
-    
-    
+
+
+    # Match mode
     # TODO pozíciók
     def _get_from_lx_(self):
-        if not self.buffer and not self.source.is_end():
-            self.tok = self.source.get_token()
-            if self.tok[0] not in self.rules.keys():
+        if not self.buffer:
+            if not self.source.is_end():
+                self.tok = self.source.get_token()
+                if self.tok[0] not in self.rules.keys():
+                    return self.tok
+                self.buffer = self.tok[1]
+                self.row = self.tok[2]
+                self.column = self.tok[3]
                 return self.tok
-            
-            self.buffer = self.tok[1]
-            self.row = self.tok[2]
-            self.column = self.tok[3]
-            
-            return self.tok
-        
+            else:
+                return None
+
         for pat, act in self.rules[self.tok[0]]:
             mtch = pat.match(self.buffer)
             if mtch:

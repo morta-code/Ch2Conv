@@ -45,15 +45,13 @@ def main():
       elif opt == "-i":
          input = open(arg)
       elif opt == "-o":
-         output = arg
+         output = open(arg)
 
     
     ### Pipeline
     src = text_reader.TextReader(input) # TODO: puffer megadása
     for ldef in grammar['lexers']:
         name, rules = ldef.popitem()
-#         print(name)
-#         print(rules)
         lex = lexer.Lexer(name, rules, src)
         src = lex
     
