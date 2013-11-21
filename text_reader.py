@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
+
 class TextReader:
-    def __init__(self, stream, buffsize = 4096):
+    def __init__(self, stream, buffsize=4096):
         self._stream = stream
         self._buffersize = buffsize
         self._end = False

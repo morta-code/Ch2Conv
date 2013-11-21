@@ -2,9 +2,10 @@
 
 import lexer
 
+
 class Parser:
-    def __init__(self, lexer, rules, dest):
-        self.lx = lexer
+    def __init__(self, lxr, rules, dest):
+        self.lx = lxr
         self.dest_stream = dest
     
     def parse(self):

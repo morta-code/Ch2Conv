@@ -5,6 +5,7 @@ import text_reader
 
 ####################################################################################################
 
+
 class Action:
     """ Action osztály a találatok kezelésére
     Action(opt, name, modulename)
@@ -24,26 +25,27 @@ class Action:
                 self.action = self._action_withtout_v
         elif type(opt) == str:
             self.action = self._action_with_external_call
-            runfile(modulename) # TODO importlib.import_module
+            #runfile(modulename) # TODO importlib.import_module
             self.external_call = locals()[opt]
         else:
             self.action = self._action_for_ignore
         
     
     def _action_with_v(self, match_str, row, column):
-        return (self.token_name, match_str, row, column)
+        return self.token_name, match_str, row, column
     
     def _action_withtout_v(self, match_str, row, column):
-        return (self.token_name, None, row, column)
+        return self.token_name, None, row, column
 
     def _action_with_external_call(self, match_str, row, column):
         match_str = self.external_call(match_str) #getattr(self.mod, self.external_call)(match_str)
-        return (self.token_name, match_str, row, column)
+        return self.token_name, match_str, row, column
     
     def _action_for_ignore(self, match_str, row, column):
         return None
 
 ####################################################################################################
+
 
 class Lexer:
     """ Lexikai elemző osztály.
@@ -57,7 +59,7 @@ class Lexer:
         self.source = source
         self.buffer = ""
         self.get_token = None
-        self.rules = [] # TODO
+        self.rules = []     # TODO
         self.row = 0
         self.column = 0
         
@@ -72,8 +74,7 @@ class Lexer:
                     self.rules.append((re.compile(rval[0]), Action()))
                 else:
                     self.rules.append((re.compile(rval[0]), Action(rval[1], rnam)))
-                
-        
+
         def init_as_lex():
             self.get_token = self._get_from_lx_
             self.tok = None
@@ -88,11 +89,13 @@ class Lexer:
                     else:
                         l.append((re.compile(rval[0]), Action(rval[1], rnam)))
                 self.rules[nam] = l
-        
-        
-        if type(source) == Lexer: init_as_lex()
-        elif type(source) == text_reader.TextReader: init_as_text()
-        else: raise Exception("Invalid source type: {}".format(type(source)))
+
+        if type(source) == Lexer:
+            init_as_lex()
+        elif type(source) == text_reader.TextReader:
+            init_as_text()
+        else:
+            raise Exception("Invalid source type: {}".format(type(source)))
     
     
     def is_end(self): # TODO valami hatékonyabb?
@@ -112,14 +115,13 @@ class Lexer:
                 if t: return t
                 else: return self._get_from_tr_() # TODO átgondolni, hogy hatékony-e
                 # TODO Ha a buf végére ért, nem biztos, hogy valid a találat, vagy nincs is találat. max_len nem kötelező!
-        
-        else: raise BufferError("No match found. {}".format(self.buffer[0:10]))
+        else:
+            raise BufferError("No match found. {}".format(self.buffer[0:10]))
         
     
     
     # TODO pozíciók
     def _get_from_lx_(self):
-        # TODO átgondolni, hogyan tárolom a szabályokat
         if not self.buffer and not self.source.is_end():
             self.tok = self.source.get_token()
             if self.tok[0] not in self.rules.keys():
@@ -138,8 +140,8 @@ class Lexer:
                 t = act.action(mtch.group(), self.row, self.column)
                 if t: return t
                 else: return self._get_from_lx_()
-                
-        else: raise BufferError("No match found. {}".format(self.buffer[0:10]))
+        else:
+            raise BufferError("No match found. {}".format(self.buffer[0:10]))
         
         
 
